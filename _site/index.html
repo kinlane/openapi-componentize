@@ -307,51 +307,94 @@ function searchResults(form) {
                             //console.log(verb);
                             if(verb == 'get' || verb == 'post' || verb == 'patch' || verb == 'put' || verb == 'delete'){
 
-                            var responses = operation.responses;
-                            for (const [status, response] of Object.entries(responses)) {
+                                // REQUEST BODY
+                                if(operation.requestBody) {
 
-                                //console.log("status: " + status);
+                                    //console.log("status: " + status);
 
-                                if(response.content){
+                                    if(operation.requestBody.content){
 
-                                for (const [mediaType, content] of Object.entries(response.content)) {
+                                        for (const [mediaType, content] of Object.entries(operation.requestBody.content)) {
 
-                                    //console.log("mediaType: " + mediaType);
-                                    
-                                    if(content.schema['$ref']){
-                                        //console.log("ALREADY!!");
-                                    }
-                                    if(content.schema['properties']){
+                                            //console.log("mediaType: " + mediaType);
+                                            
+                                            if(content.schema['$ref']){
+                                                //console.log("ALREADY!!");
+                                            }
+                                            if(content.schema['properties']){
 
-                                        console.log(content.schema['type']);
-                                        console.log(content.schema['title']);
-                                        console.log(content.schema['properties']);
+                                                console.log(content.schema['type']);
+                                                console.log(content.schema['title']);
+                                                console.log(content.schema['properties']);
 
-                                        var this_object = {};
-                                        this_object.type = content.schema['type'];
-                                        this_object.properties = content.schema['properties'];
+                                                var this_object = {};
+                                                this_object.type = content.schema['type'];
+                                                this_object.properties = content.schema['properties'];
 
-                                        openapi.components.schemas[content.schema['title']] = this_object;
+                                                openapi.components.schemas[content.schema['title']] = this_object;
 
-                                        openapi.paths[path][verb].responses[status].content[mediaType].schema['$ref'] = '#/components/schemas/' + content.schema['title'];
+                                                openapi.paths[path][verb].requestBody.content[mediaType].schema['$ref'] = '#/components/schemas/' + content.schema['title'];
 
-                                        delete openapi.paths[path][verb].responses[status].content[mediaType].schema.type;
+                                                delete openapi.paths[path][verb].requestBody.content[mediaType].schema.type;
+                                                delete openapi.paths[path][verb].requestBody.content[mediaType].schema.title;
+                                                delete openapi.paths[path][verb].requestBody.content[mediaType].schema.properties;
+                                            
+                                            }                                    
+                                            else{
+                                                //console.log('NOPE!!');
+                                            }
 
-                                        delete openapi.paths[path][verb].responses[status].content[mediaType].schema.title;
+                                        }  
+                                    }                              
 
-                                        delete openapi.paths[path][verb].responses[status].content[mediaType].schema.properties;
-                                     
-                                    }                                    
-                                    else{
-                                        //console.log('NOPE!!');
-                                    }
+                                }
 
-                                    }  
-                                }                              
+                                // RESPONSE
+                                var responses = operation.responses;
+                                for (const [status, response] of Object.entries(responses)) {
 
-                            }
+                                    //console.log("status: " + status);
 
-                            operation_counter++;
+                                    if(response.content){
+
+                                    for (const [mediaType, content] of Object.entries(response.content)) {
+
+                                        //console.log("mediaType: " + mediaType);
+                                        
+                                        if(content.schema['$ref']){
+                                            //console.log("ALREADY!!");
+                                        }
+                                        if(content.schema['properties']){
+
+                                            console.log(content.schema['type']);
+                                            console.log(content.schema['title']);
+                                            console.log(content.schema['properties']);
+
+                                            var this_object = {};
+                                            this_object.type = content.schema['type'];
+                                            this_object.properties = content.schema['properties'];
+
+                                            openapi.components.schemas[content.schema['title']] = this_object;
+
+                                            openapi.paths[path][verb].responses[status].content[mediaType].schema['$ref'] = '#/components/schemas/' + content.schema['title'];
+
+                                            delete openapi.paths[path][verb].responses[status].content[mediaType].schema.type;
+
+                                            delete openapi.paths[path][verb].responses[status].content[mediaType].schema.title;
+
+                                            delete openapi.paths[path][verb].responses[status].content[mediaType].schema.properties;
+                                        
+                                        }                                    
+                                        else{
+                                            //console.log('NOPE!!');
+                                        }
+
+                                        }  
+                                    }                              
+
+                                }
+
+                                operation_counter++;
                             
                             }
                         }                    
