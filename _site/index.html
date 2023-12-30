@@ -259,7 +259,7 @@ function searchResults(form) {
                     document.getElementById('openapi-output').value = JSON.stringify(openapi, null, 2); 
                 }
                 if(format=='yaml'){
-                    document.getElementById('openapi-output').value = jsyaml.dump(openapi); 
+                    document.getElementById('openapi-output').value = "---\r\n" + jsyaml.dump(openapi) + "---"; 
                 }                
             }
 
