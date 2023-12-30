@@ -93,6 +93,9 @@ width: expand
 
                                                 var this_object = {};
                                                 this_object.type = content.schema['type'];
+                                                if(content.schema['required']){
+                                                    this_object.required = content.schema['required'];
+                                                }
                                                 this_object.properties = content.schema['properties'];
 
                                                 openapi.components.schemas[content.schema['title']] = this_object;
@@ -100,6 +103,7 @@ width: expand
                                                 openapi.paths[path][verb].requestBody.content[mediaType].schema['$ref'] = '#/components/schemas/' + content.schema['title'];
 
                                                 delete openapi.paths[path][verb].requestBody.content[mediaType].schema.type;
+                                                delete openapi.paths[path][verb].requestBody.content[mediaType].schema.required;
                                                 delete openapi.paths[path][verb].requestBody.content[mediaType].schema.title;
                                                 delete openapi.paths[path][verb].requestBody.content[mediaType].schema.properties;
                                             
